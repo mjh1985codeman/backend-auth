@@ -1,5 +1,5 @@
 const User = require("../models/user");
-const bcrypt = require("bcryptjs");
+const cryptPW = require("../utils/auth");
 const jwt = require("jsonwebtoken");
 
 const user_routes = (server) => {
@@ -22,8 +22,7 @@ const user_routes = (server) => {
             }
         
             //Encrypt user password
-            encryptedPassword = await bcrypt.hash(password, 10);
-        
+            encryptedPassword = await cryptPW(password);
             // Create user in our database
             const user = await User.create({
               userName,
