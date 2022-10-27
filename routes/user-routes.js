@@ -10,7 +10,7 @@ const user_routes = (server) => {
         
             // Validate user input
             if (!(email && password && userName)) {
-              res.status(400).send("All input is required");
+              res.status(400).send("Email, password and username are required.");
             }
         
             // check if user already exist
@@ -18,7 +18,7 @@ const user_routes = (server) => {
             const oldUser = await User.findOne({ email });
         
             if (oldUser) {
-              return res.status(409).send("User Already Exist. Please Login");
+              return res.status(409).send("Email Already Exists; Please Login.");
             }
         
             //Encrypt user password
