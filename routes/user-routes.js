@@ -1,5 +1,5 @@
 const User = require("../models/user");
-const {cryptPW, assignToken} = require("../utils/auth");
+const {cryptPW, assignToken, validatePW} = require("../utils/auth");
 
 const user_routes = (server) => {
     server.post('/register', async (req, res) => {
@@ -41,6 +41,26 @@ const user_routes = (server) => {
 
     server.post("/login", async (req, res) => {
         //login logic here. 
+        try {
+            // User Input
+            const { email, password } = req.body;
+        
+            // Validate user input was submitted
+            if (!(email && password)) {
+              res.status(400).send("All input is required");
+            }
+            // Validate if user exists in the database
+            const user = await User.findOne({ email });
+            //compare submitted request w/ actual pw.   
+            if (user && (await validatePW(password, user.password))) {
+              // Create and save token
+              user.token = assignToken({user_id: user._id, email }, process.env.TOKEN_KEY, {expiresIn: "2h"});
+              res.status(200).json(user);
+            }
+            res.status(400).send("Invalid Credentials");
+          } catch (err) {
+            console.log(err);
+          }
     })
 };
 
