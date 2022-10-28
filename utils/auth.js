@@ -6,5 +6,10 @@ const cryptPW = async (pw) => {
     return hashedPw;
 };
 
+const assignToken = (userObj, key, expObj) => {
+   const token = jwt.sign(userObj, key, expObj);
+   return token;
+};
 
-module.exports = cryptPW
+
+module.exports = {cryptPW, assignToken};

@@ -1,6 +1,5 @@
 const User = require("../models/user");
-const cryptPW = require("../utils/auth");
-const jwt = require("jsonwebtoken");
+const {cryptPW, assignToken} = require("../utils/auth");
 
 const user_routes = (server) => {
     server.post('/register', async (req, res) => {
@@ -29,17 +28,9 @@ const user_routes = (server) => {
               email: email.toLowerCase(), // sanitize: convert email to lowercase
               password: encryptedPassword,
             });
-        
-            // Create token
-            const token = jwt.sign(
-              { user_id: user._id, email },
-              process.env.TOKEN_KEY,
-              {
-                expiresIn: "2h",
-              }
-            );
-            // save user token
-            user.token = token;
+
+            // create and save user token
+            user.token = assignToken({user_id: user._id, email }, process.env.TOKEN_KEY, {expiresIn: "2h"});
         
             // return new user
             res.status(201).json(user);
