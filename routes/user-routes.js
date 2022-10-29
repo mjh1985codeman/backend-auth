@@ -56,8 +56,10 @@ const user_routes = (server) => {
               // Create and save token
               user.token = assignToken({user_id: user._id, email }, process.env.TOKEN_KEY, {expiresIn: "2h"});
               res.status(200).json(user);
-            } if (!await validatePW(password, user.password)) {
+            } if (user && !await validatePW(password, user.password)) {
                res.status(400).send("Invalid Credentials");
+            } if (!user) {
+                res.status(404).send("LOL this user does not exist.")
             }
           } catch (err) {
             console.log(err);
