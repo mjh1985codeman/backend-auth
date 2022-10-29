@@ -1,5 +1,5 @@
 const User = require("../models/user");
-const {cryptPW, assignToken, validatePW} = require("../utils/auth");
+const {cryptPW, assignToken, validatePW, verifyToken} = require("../utils/auth");
 
 const user_routes = (server) => {
     server.post('/register', async (req, res) => {
@@ -61,6 +61,12 @@ const user_routes = (server) => {
           } catch (err) {
             console.log(err);
           }
+    })
+
+
+    //Protected route (IE: must be 'logged in' in order to access the route);
+    server.get("/howdy", verifyToken, (req, res) => {
+        res.status(200).send("HOWDY!!!");
     })
 };
 
